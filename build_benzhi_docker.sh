@@ -10,4 +10,5 @@ docker buildx build --platform "$PLATFORM" -f benzhi.Dockerfile -t "$IMAGE_NAME"
 
 echo ""
 echo "✅ Docker image '$IMAGE_NAME' built successfully!"
-echo "📋 进入容器: docker run -it $IMAGE_NAME bash"
+echo "▶️  运行镜像: docker run --rm $IMAGE_NAME"
+echo "📋 调试容器: docker run -it --entrypoint bash $IMAGE_NAME"
