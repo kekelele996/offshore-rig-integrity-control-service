@@ -15,14 +15,18 @@ func NewManifestSnapshotStore() *ManifestSnapshotStore {
 	return &ManifestSnapshotStore{items: map[string]domain.ManifestSnapshot{}}
 }
 
+// Save stores a deep copy so later mutations to the caller's snapshot cannot
+// alter the stored record.
 func (s *ManifestSnapshotStore) Save(snapshot domain.ManifestSnapshot) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.items[snapshot.PlanID] = snapshot
+	s.items[snapshot.PlanID] = domain.CopyManifestSnapshot(snapshot)
 }
 
+// Load returns a deep copy so callers cannot mutate the stored record through
+// the returned value.
 func (s *ManifestSnapshotStore) Load(planID string) domain.ManifestSnapshot {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	return s.items[planID]
+	return domain.CopyManifestSnapshot(s.items[planID])
 }
