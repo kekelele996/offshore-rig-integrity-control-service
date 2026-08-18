@@ -8,5 +8,12 @@ type ManifestSnapshot struct {
 }
 
 func CopyManifestSnapshot(in ManifestSnapshot) ManifestSnapshot {
-	return in
+	out := in
+	out.Zones = append([]string(nil), in.Zones...)
+	out.Contacts = append([]string(nil), in.Contacts...)
+	out.RequiredChecks = make(map[string][]string, len(in.RequiredChecks))
+	for zone, checks := range in.RequiredChecks {
+		out.RequiredChecks[zone] = append([]string(nil), checks...)
+	}
+	return out
 }
