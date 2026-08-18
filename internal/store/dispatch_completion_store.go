@@ -18,8 +18,12 @@ func NewDispatchCompletionStore(expected int) *DispatchCompletionStore {
 }
 func (s *DispatchCompletionStore) Acknowledge(zone string) {
 	s.mu.Lock()
-	defer s.mu.Unlock()
 	s.acked[zone] = true
+	if len(s.acked) < s.expected {
+		s.mu.Unlock()
+		return
+	}
+	s.mu.Unlock()
 	s.once.Do(func() { close(s.done) })
 }
 func (s *DispatchCompletionStore) Wait(ctx context.Context) error {

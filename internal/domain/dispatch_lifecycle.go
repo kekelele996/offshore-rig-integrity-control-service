@@ -15,7 +15,20 @@ type CompletionGate struct {
 func NewCompletionGate(expected int) *CompletionGate {
 	return &CompletionGate{remaining: expected, done: make(chan struct{})}
 }
-func (g *CompletionGate) Complete() { g.once.Do(func() { close(g.done) }) }
+func (g *CompletionGate) Complete() {
+	g.mu.Lock()
+	if g.remaining == 0 {
+		g.mu.Unlock()
+		return
+	}
+	g.remaining--
+	if g.remaining == 0 {
+		g.mu.Unlock()
+		g.once.Do(func() { close(g.done) })
+		return
+	}
+	g.mu.Unlock()
+}
 func (g *CompletionGate) Wait(ctx context.Context) error {
 	select {
 	case <-g.done:
