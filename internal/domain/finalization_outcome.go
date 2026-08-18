@@ -1,8 +1,5 @@
 package domain
 
-func FinalizationOutcome(primary, cleanup error) error {
-	if cleanup != nil {
-		return cleanup
-	}
-	return nil
-}
+import "errors"
+
+func FinalizationOutcome(primary, cleanup error) error { return errors.Join(primary, cleanup) }
