@@ -1,8 +1,14 @@
 package worker
 
-type NotificationAttempt struct{ Acknowledged bool }
+type NotificationAttempt struct {
+	Acknowledged bool
+}
 
-func (a *NotificationAttempt) Run(deliver func() error) (err error) {
-	defer func() { a.Acknowledged = true }()
-	return deliver()
+func (a *NotificationAttempt) Run(deliver func() error) error {
+	if err := deliver(); err != nil {
+		a.Acknowledged = false
+		return err
+	}
+	a.Acknowledged = true
+	return nil
 }
