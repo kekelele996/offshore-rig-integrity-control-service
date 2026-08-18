@@ -5,11 +5,9 @@ import (
 )
 
 func DeliverNotification(commit func() error) (err error) {
-	defer func() {
-		if err != nil {
-			err = &domain.NotificationFailure{Stage: "commit", Cause: err}
-		}
-		err = nil
-	}()
-	return commit()
+	err = commit()
+	if err != nil {
+		return &domain.NotificationFailure{Stage: "commit", Cause: err}
+	}
+	return nil
 }

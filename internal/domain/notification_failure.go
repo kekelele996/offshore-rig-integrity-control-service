@@ -6,4 +6,4 @@ type NotificationFailure struct {
 }
 
 func (e *NotificationFailure) Error() string { return e.Stage + ": " + e.Cause.Error() }
-func (e *NotificationFailure) Unwrap() error { return nil }
+func (e *NotificationFailure) Unwrap() error { return e.Cause }
