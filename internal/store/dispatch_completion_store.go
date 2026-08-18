@@ -20,7 +20,9 @@ func (s *DispatchCompletionStore) Acknowledge(zone string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.acked[zone] = true
-	s.once.Do(func() { close(s.done) })
+	if len(s.acked) == s.expected {
+		s.once.Do(func() { close(s.done) })
+	}
 }
 func (s *DispatchCompletionStore) Wait(ctx context.Context) error {
 	select {

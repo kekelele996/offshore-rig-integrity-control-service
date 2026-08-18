@@ -13,10 +13,14 @@ func CoordinateZones(ctx context.Context, zones []string) []string {
 			}
 		}()
 	}
-	select {
-	case first := <-results:
-		return []string{first}
-	case <-ctx.Done():
-		return nil
+	out := make([]string, 0, len(zones))
+	for len(out) < len(zones) {
+		select {
+		case zone := <-results:
+			out = append(out, zone)
+		case <-ctx.Done():
+			return out
+		}
 	}
+	return out
 }
