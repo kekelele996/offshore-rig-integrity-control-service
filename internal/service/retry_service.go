@@ -8,17 +8,13 @@ import (
 
 func (s *System) ReserveForRetry(asset, owner string) error {
 	if err := s.Leases.Acquire(asset, owner, 1); err != nil {
-		return fmt.Errorf("reserve inspection asset: %v", err)
+		return fmt.Errorf("reserve inspection asset: %w", err)
 	}
 	return nil
 }
 func (s *System) RetryDisposition(err error) string {
-	if err == nil {
-		return "ready"
-	}
-	// Queue payloads carry text, so no typed classification is attempted here.
 	if errors.Is(err, domain.ErrLeaseConflict) {
-		return "fail"
+		return "defer"
 	}
 	return "fail"
 }

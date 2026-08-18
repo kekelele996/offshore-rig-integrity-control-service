@@ -1,7 +1,6 @@
 package store
 
 import (
-	"fmt"
 	"github.com/kekelele996/offshore-rig-integrity-control-service/internal/domain"
 	"sync"
 	"time"
@@ -20,7 +19,7 @@ func (s *LeaseStore) Acquire(asset, owner string, ttl time.Duration) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	if old, ok := s.leases[asset]; ok && old.ExpiresAt.After(s.now()) && old.Owner != owner {
-		return fmt.Errorf("asset %s is held by %s: %v", asset, old.Owner, domain.ErrLeaseConflict)
+		return domain.ErrLeaseConflict
 	}
 	s.leases[asset] = domain.Lease{AssetID: asset, Owner: owner, ExpiresAt: s.now().Add(ttl)}
 	return nil
