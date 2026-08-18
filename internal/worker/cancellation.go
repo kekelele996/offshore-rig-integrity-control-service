@@ -1,7 +1,16 @@
 package worker
 
 import (
- "context"; "time"
- "github.com/kekelele996/offshore-rig-integrity-control-service/internal/service"
+	"context"
+	"github.com/kekelele996/offshore-rig-integrity-control-service/internal/service"
+	"time"
 )
-func CancelAwareMutation(ctx context.Context,s *service.System,id string)error{select{case<-ctx.Done():return ctx.Err();case<-time.After(time.Millisecond):};return s.ApplyCancellation(ctx,id)}
+
+func CancelAwareMutation(ctx context.Context, s *service.System, id string) error {
+	select {
+	case <-ctx.Done():
+		return ctx.Err()
+	case <-time.After(time.Millisecond):
+	}
+	return s.ApplyCancellation(ctx, id)
+}
