@@ -9,19 +9,16 @@ func NewHandoverHistory(roster []string) *HandoverHistory {
 }
 
 func (h *HandoverHistory) Visible(skip string) []string {
-	visible := h.roster[:0]
+	visible := make([]string, 0, len(h.roster))
 	for _, name := range h.roster {
 		if name == skip {
 			continue
 		}
 		visible = append(visible, name)
 	}
-	for index := len(visible); index < len(h.roster); index++ {
-		h.roster[index] = ""
-	}
 	return visible
 }
 
 func (h *HandoverHistory) Roster() []string {
-	return h.roster
+	return append([]string(nil), h.roster...)
 }
